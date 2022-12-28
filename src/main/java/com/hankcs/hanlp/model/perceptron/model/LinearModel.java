@@ -133,15 +133,17 @@ public class LinearModel implements ICacheAble
         logger.start("构建双数组trie树...\n");
         logEvery = (int) Math.ceil(heap.size() / 10000f);
         n = 0;
+        int id;
+        int i;
         for (FeatureSortItem item : heap)
         {
             if (++n % logEvery == 0 || n == heap.size())
             {
                 logger.out("\r%.2f%% ", MathUtility.percentage(n, heap.size()));
             }
-            int id = mdat.size();
+            id = mdat.size();
             mdat.put(item.key, id);
-            for (int i = 0; i < tagSet.size(); ++i)
+            for (i = 0; i < tagSet.size(); ++i)
             {
                 parameter[id * tagSet.size() + i] = this.parameter[item.id * tagSet.size() + i];
             }
@@ -281,38 +283,45 @@ public class LinearModel implements ICacheAble
         int[][] preMatrix = new int[sentenceLength][labelSize];
         double[][] scoreMatrix = new double[2][labelSize];
 
-        for (int i = 0; i < sentenceLength; i++)
-        {
-            int _i = i & 1;
-            int _i_1 = 1 - _i;
-            int[] allFeature = instance.getFeatureAt(i);
-            final int transitionFeatureIndex = allFeature.length - 1;
-            if (0 == i)
-            {
+        int _i;
+        int _i_1;
+        int[] allFeature;
+        int transitionFeatureIndex;
+        double score;
+        double maxScore;
+        double curScore;
+        int i;
+        int j;
+        int curLabel;
+        int preLabel;
+
+        for (i = 0; i < sentenceLength; i++) {
+            _i = i & 1;
+            _i_1 = 1 - _i;
+            allFeature = instance.getFeatureAt(i);
+            transitionFeatureIndex = allFeature.length - 1;
+            if (0 == i) {
                 allFeature[transitionFeatureIndex] = bos;
-                for (int j = 0; j < allLabel.length; j++)
-                {
+                for (j = 0; j < allLabel.length; j++) {
                     preMatrix[0][j] = j;
 
-                    double score = score(allFeature, j);
+                    score = score(allFeature, j);
 
                     scoreMatrix[0][j] = score;
                 }
-            }
-            else
-            {
-                for (int curLabel = 0; curLabel < allLabel.length; curLabel++)
+            } else {
+                for (curLabel = 0; curLabel < allLabel.length; curLabel++)
                 {
 
-                    double maxScore = Integer.MIN_VALUE;
+                    maxScore = Integer.MIN_VALUE;
 
-                    for (int preLabel = 0; preLabel < allLabel.length; preLabel++)
+                    for (preLabel = 0; preLabel < allLabel.length; preLabel++)
                     {
 
                         allFeature[transitionFeatureIndex] = preLabel;
-                        double score = score(allFeature, curLabel);
+                        score = score(allFeature, curLabel);
 
-                        double curScore = scoreMatrix[_i_1][preLabel] + score;
+                        curScore = scoreMatrix[_i_1][preLabel] + score;
 
                         if (maxScore < curScore)
                         {
@@ -327,7 +336,7 @@ public class LinearModel implements ICacheAble
         }
 
         int maxIndex = 0;
-        double maxScore = scoreMatrix[(sentenceLength - 1) & 1][0];
+        maxScore = scoreMatrix[(sentenceLength - 1) & 1][0];
 
         for (int index = 1; index < allLabel.length; index++)
         {
@@ -338,7 +347,7 @@ public class LinearModel implements ICacheAble
             }
         }
 
-        for (int i = sentenceLength - 1; i >= 0; --i)
+        for (i = sentenceLength - 1; i >= 0; --i)
         {
             guessLabel[i] = allLabel[maxIndex];
             maxIndex = preMatrix[i][maxIndex];

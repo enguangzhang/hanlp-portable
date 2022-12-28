@@ -72,11 +72,13 @@ public class Utility
     public static <T> void shuffleArray(T[] ar)
     {
         Random rnd = new Random();
+        int index;
+        T a;
         for (int i = ar.length - 1; i > 0; i--)
         {
-            int index = rnd.nextInt(i + 1);
+            index = rnd.nextInt(i + 1);
             // Simple swap
-            T a = ar[index];
+            a = ar[index];
             ar[index] = ar[i];
             ar[i] = a;
         }

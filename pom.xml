@@ -4,7 +4,7 @@
 
     <groupId>com.hankcs</groupId>
     <artifactId>hanlp</artifactId>
-    <version>portable-customize-1.8.3-SNAPSHOT</version>
+    <version>portable-customize-1.8.4-SNAPSHOT</version>
 
     <name>HanLP</name>
     <url>https://github.com/hankcs/HanLP</url>
@@ -143,7 +143,7 @@
         <dependency>
             <groupId>com.liepin</groupId>
             <artifactId>ins-oss-client</artifactId>
-            <version>1.0.12-SNAPSHOT</version>
+            <version>1.0.31</version>
         </dependency>
     </dependencies>
     <!--禁用Java8过于严格的javadoc警告-->

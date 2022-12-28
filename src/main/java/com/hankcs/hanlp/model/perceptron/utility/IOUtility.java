@@ -59,28 +59,35 @@ public class IOUtility extends IOUtil
             allFiles = new File[]{root};
         }
 
-        for (File file : allFiles)
-        {
-            BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
-            String line;
-            while ((line = br.readLine()) != null)
-            {
+        BufferedReader br;
+        String line;
+        Sentence sentence;
+        for (File file : allFiles) {
+            br = new BufferedReader(new InputStreamReader(new FileInputStream(file), "UTF-8"));
+
+            while ((line = br.readLine()) != null) {
                 line = line.trim();
                 if (line.length() == 0)
                 {
                     continue;
                 }
-                Sentence sentence = Sentence.create(line);
-                if (sentence.wordList.size() == 0) continue;
+                sentence = Sentence.create(line);
+                if (sentence == null) {
+                    continue;
+                }
+                if (sentence.wordList.size() == 0) {
+                    continue;
+                }
                 ++size;
-                if (size % 1000 == 0)
-                {
+                if (size % 1000 == 0) {
                     logger.err("%c语料: %dk...", 13, size / 1000);
                 }
                 // debug
 //                if (size == 100) break;
                 if (handler.process(sentence)) break;
             }
+
+            br.close();
         }
 
         return size;
@@ -90,17 +97,21 @@ public class IOUtility extends IOUtil
     {
         ConsoleLogger logger = new ConsoleLogger();
         int size = 0;
+        Sentence sentence = null;
         for (String content : contents) {
             content = content.trim();
-            if (content.length() == 0)
-            {
+            if (content.length() == 0) {
                 continue;
             }
-            Sentence sentence = Sentence.create(content);
-            if (sentence.wordList.size() == 0) continue;
+            sentence = Sentence.create(content);
+            if (sentence == null) {
+                continue;
+            }
+            if (sentence.wordList.size() == 0) {
+                continue;
+            }
             ++size;
-            if (size % 1000 == 0)
-            {
+            if (size % 1000 == 0) {
                 logger.err("%c语料: %dk...", 13, size / 1000);
             }
             // debug

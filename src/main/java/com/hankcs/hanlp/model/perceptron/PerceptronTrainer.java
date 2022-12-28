@@ -276,20 +276,27 @@ public abstract class PerceptronTrainer extends InstanceConsumer
             final double[] total = new double[model.parameter.length];
             final int[] timestamp = new int[model.parameter.length];
             int current = 0;
+            int[] guessLabel;
+            int[] featureVector;
+            int[] goldFeature;
+            int[] predFeature;
+            int i;
+            int j;
+
             for (int iter = 1; iter <= maxIteration; iter++)
             {
                 Utility.shuffleArray(instances);
                 for (Instance instance : instances)
                 {
                     ++current;
-                    int[] guessLabel = new int[instance.length()];
+                    guessLabel = new int[instance.length()];
                     model.viterbiDecode(instance, guessLabel);
-                    for (int i = 0; i < instance.length(); i++)
+                    for (i = 0; i < instance.length(); i++)
                     {
-                        int[] featureVector = instance.getFeatureAt(i);
-                        int[] goldFeature = new int[featureVector.length];
-                        int[] predFeature = new int[featureVector.length];
-                        for (int j = 0; j < featureVector.length - 1; j++)
+                        featureVector = instance.getFeatureAt(i);
+                        goldFeature = new int[featureVector.length];
+                        predFeature = new int[featureVector.length];
+                        for (j = 0; j < featureVector.length - 1; j++)
                         {
                             goldFeature[j] = featureVector[j] * tagSet.size() + instance.tagArray[i];
                             predFeature[j] = featureVector[j] * tagSet.size() + guessLabel[i];
@@ -393,9 +400,8 @@ public abstract class PerceptronTrainer extends InstanceConsumer
                 return false;
             }
         });
-        Instance[] instances = new Instance[instanceList.size()];
-        instanceList.toArray(instances);
-        return instances;
+
+        return instanceList.toArray(new Instance[0]);
     }
 
     protected double[] evaluateByContents(List<String> contents, final LinearModel model) throws IOException
